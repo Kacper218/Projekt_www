@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bydgoszcz</title>
+    <link href="CSS/style.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body class="body">
+    <div class="main__container">
+        <header class="header">Miasto Bydgoszcz</header>
+        <nav class="nav">
+            <ul class="nav__list">
+                <div class="nav__header">Nawigacja</div>
+                <a href="homepage.html">
+                    <li class="nav__listItem">Strona startowa</li>
+                </a>
+                <a href="historia.html">
+                    <li class="nav__listItem">Historia</li>
+                </a>
+                <a href="galeria.html">
+                    <li class="nav__listItem">Galeria</li>
+                </a>
+                <a href="pogoda.html">
+                    <li class="nav__listItem">Pogoda</li>
+                </a>
+                <a href="kontakt.html">
+                    <li class="nav__listItem">Kontakt</li>
+                </a>
+            </ul>
+        </nav>
+        <div class="container_grid container">
+            <section class="section grid__item1">
+                <h1>Witamy w Bydgoszczy!</h1>
+            </section>
+            <button class="button grid__item2">Zmień tryb</button>
+        </div>
+        <main class="main">
+            <h2 class="h2"> Aktualna pogoda</h2>
+            <ul class="weather" id="weather"></ul>
+        </main>
+    </div>
+    <footer class="footer">
+        Autor: Kacper Przybyszewski
+    </footer>
+
+</body>
+
+<script>
+    {
+
+        const toggleClasses = () => {
+            const main = document.querySelector(".main");
+            const header = document.querySelector(".header");
+            const nav = document.querySelector(".nav");
+            const container = document.querySelector(".container");
+            const footer = document.querySelector(".footer");
+            const button = document.querySelector(".button");
+
+            main.classList.toggle("dark");
+            header.classList.toggle("dark");
+            nav.classList.toggle("dark");
+            container.classList.toggle("dark");
+            footer.classList.toggle("dark");
+            button.classList.toggle("dark");
+        }
+
+        const init = () => {
+            const button = document.querySelector(".button");
+            button.addEventListener("click", toggleClasses)
+        }
+
+        init();
+
+        $(function() {
+
+            var $forecast = $('#weather');
+
+            $.ajax({
+                type: "GET",
+                url: 'https://api.openweathermap.org/data/2.5/weather?lat=53.12231&lon=18&appid=7a64b79d7849747620d1254c11b3b62c&units=metric&lang=pl',
+                success: function(forecast) {
+                    $.each(forecast, function(i, data) {
+                        if (data[0]) {
+                            if (data[0].description) {
+                                $forecast.append('<li class="weather__element"><h2> ' + data[0].description + '</h2></li>')
+                            }
+                        }
+                        if (data.temp) {
+                            $forecast.append('<li class="weather__element" > Temperatura: ' + data.temp + ' stopni Celcjusza</li>')
+                        }
+                        if (data.pressure) {
+                            $forecast.append('<li class="weather__element"> Ciśnienie: ' + data.pressure + ' mb</li>')
+                        }
+                        if (data.humidity) {
+                            $forecast.append('<li class="weather__element"> Wilgotność powietrza: ' + data.humidity + '%</li>')
+                        }
+                        if (data.speed) {
+                            $forecast.append('<li class="weather__element"> Prędkość powietrza: ' + data.speed + ' m/s</li>')
+                        }
+                        if (data.sunrise) {
+                            var wschod = new Date((data.sunrise + 7200) * 1000);
+                            $forecast.append('<li class="weather__element">Wschód słońca: ' + wschod.toGMTString() + '</li>')
+                        }
+                        if (data.sunset) {
+                            var wschod = new Date((data.sunset + 7200) * 1000);
+                            $forecast.append('<li class="weather__element">Zachód słońca: ' + wschod.toGMTString() + '</li>')
+                        }
+
+                    });
+                }
+            });
+        });
+
+
+
+    }
+</script>
+
+
+
+</html>
